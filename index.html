@@ -1,0 +1,40 @@
+<label>
+    <input type="radio" name="color" value="yellow" checked>
+    Yellow
+</label><br>
+<label>
+    <input type="radio" name="color" value="white">
+    White
+</label><br>
+<p>Input</p>
+<textarea id="input"></textarea>
+<p>Output</p>
+<textarea id="output"></textarea>
+<script>
+    const acceptable = 'abcdefghijklmnopqrstuvwxyz@#?! \n'
+    const ignore = ' \n'
+    const input = document.getElementById('input')
+    const output = document.getElementById('output')
+    const radios = document.querySelectorAll('input[name="color"]')
+    let prevRadioValue = 'yellow'
+    input.addEventListener('input', () => {
+        const color = document.querySelector('input[name="color"]:checked').value;
+        output.value = input.value.split('')
+            .filter(c => acceptable.includes(c))
+            .map(c => c
+                .replace('@', 'at')
+                .replace('#', 'hashtag')
+                .replace('?', 'question')
+                .replace('!', 'exclamation')
+            )
+            .map(c => ignore.includes(c) ? c : `:alphabet-${color}-${c}:`)
+            .map(c => c === ' ' ? '   ' : c)
+            .join('')
+    })
+    radios.forEach(r => r.addEventListener('change', function () {
+        console.log(output.value, prevRadioValue, this.value)
+        output.value = output.value.replace(new RegExp(prevRadioValue, 'gm'), this.value)
+        prevRadioValue = this.value
+    }))
+    output.addEventListener('click', function () { this.select() })
+</script>
